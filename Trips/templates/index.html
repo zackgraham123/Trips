@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Holiday Savings Tracker</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+
+<div class="container">
+
+    <h1>Holiday Savings Tracker ✈️</h1>
+
+    <form method="POST">
+
+        <label>Current Bank Balance (£)</label>
+        <input type="number" step="0.01" name="balance" required>
+
+        <h2>Paid Milestones</h2>
+
+        {% for name, cost in milestones.items() %}
+        <label class="checkbox">
+            <input type="checkbox" name="paid" value="{{ name }}">
+            {{ name }} (£{{ cost }})
+        </label>
+        {% endfor %}
+
+        <button type="submit">Calculate</button>
+    </form>
+
+    {% if progress is defined %}
+
+    <hr>
+
+    <h2>Progress</h2>
+
+    <div class="bar">
+        <div class="fill" style="width: {{ percentage }}%"></div>
+    </div>
+
+    <p>
+        £{{ progress }} / £{{ target }} ({{ percentage|round(1) }}%)
+    </p>
+
+    <p><b>Remaining:</b> £{{ remaining }}</p>
+
+    <h2>Summary</h2>
+    <p>Bank Balance: £{{ balance }}</p>
+    <p>Already Paid: £{{ spent }}</p>
+
+    {% if next_milestone %}
+        <p><b>Next Suggested:</b> {{ next_milestone[0] }} (£{{ next_milestone[1] }})</p>
+    {% endif %}
+
+    <h2>Affordable Right Now</h2>
+    {% if affordable %}
+        {% for name, cost in affordable %}
+            <p>💰 {{ name }} (£{{ cost }})</p>
+        {% endfor %}
+    {% else %}
+        <p>Nothing affordable right now</p>
+    {% endif %}
+
+    <h2>Best Budget Basket</h2>
+    {% if basket %}
+        {% for name, cost in basket %}
+            <p>✓ {{ name }} (£{{ cost }})</p>
+        {% endfor %}
+        <p><b>Leftover:</b> £{{ leftover }}</p>
+    {% else %}
+        <p>No milestones affordable</p>
+    {% endif %}
+
+    {% endif %}
+
+</div>
+
+</body>
+</html>
